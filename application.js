@@ -33,10 +33,10 @@ async function LogSuccess(hrUserId, lrUserId, lrPreviousRankName) {
 
 	const embed = new MessageEmbed()
 		.setTitle("Promotion!")
-		.setColor("#81c784")
-		.addField("High Rank", hrUsername)
-		.addField("Low Rank", lrUsername)
-		.addField("Role Change", `**${lrPreviousRankName}** -> **${lrNewRankName}**`);
+		.setColor("#4caf50")
+		.addField("High Rank", `${hrUsername} [${hrUserId}]`, true)
+		.addField("Low Rank", `${lrUsername} [${lrUserId}]`, true)
+		.addField("Role Change", `**${lrPreviousRankName}** -> **${lrNewRankName}**`, true);
 
 	webhookClient.send({
 		username: hrUsername,
