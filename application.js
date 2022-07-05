@@ -40,7 +40,7 @@ async function LogSuccess(hrUserId, lrUserId, lrPreviousRankName) {
 		})
 		.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${lrUserId}&width=420&height=420&format=png`)
 		.addField("Promoted Staff", `${lrUsername} [${lrUserId}]`, true)
-		.addField("Role Change", `"${lrPreviousRankName}" → "${lrNewRankName}"`)
+		.addField("Role Change", `${lrPreviousRankName} → ${lrNewRankName}`)
 		.setTimestamp()
 		.setFooter({ text: 'Created by Azutreo', iconURL: 'https://www.roblox.com/headshot-thumbnail/image?userId=9221415&width=420&height=420&format=png' });;
 
