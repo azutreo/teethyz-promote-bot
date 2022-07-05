@@ -50,8 +50,6 @@ async function Promote(hrUserId, lrUserId) {
 	let lrRank = await Noblox.getRankInGroup(GROUP_ID, lrUserId);
 	let lrPreviousRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
 
-	console.log(hrRank, lrRank, lrPreviousRankName);
-
 	if (hrRank < RANK_PROMOTER) {
 		return -2;
 	}
@@ -62,8 +60,8 @@ async function Promote(hrUserId, lrUserId) {
 		return -4;
 	}
 
-	await Noblox.changeRank(GROUP_ID, hrUserId, 1);
-	await LogSuccess(hrUserId, lrUserId, lrPreviousRankName)
+	await Noblox.changeRank(GROUP_ID, lrUserId, 1);
+	await LogSuccess(hrUserId, lrUserId, lrPreviousRankName);
 
 	return 1;
 }
@@ -77,9 +75,9 @@ Application.get("/promote/:api_key/:hrUserId/:lrUserId", (request, response) => 
 		return response.json("Error -1");
 	}
 
-	Promote(hrUserId, lrUserId)
+	Promote(hrUserId, lrUserId);
 
-	response.json("Success")
+	response.json("Success");
 });
 
 const listener = Application.listen(process.env.PORT, () => {
