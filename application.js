@@ -45,35 +45,45 @@ async function LogSuccess(hrUserId, lrUserId, lrPreviousRankName) {
 	});
 }
 
+async function Promote(hrUserId, lrUserId) {
+	let hrRank = await Noblox.getRankInGroup(GROUP_ID, hrUserId);
+	let lrRank = await Noblox.getRankInGroup(GROUP_ID, lrUserId);
+	let lrPreviousRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
+
+	console.log(hrRank, lrRank, lrPreviousRankName);
+
+	if (hrRank < RANK_PROMOTER) {
+		return [-2, null];
+	}
+
+	if (lrRank >= RANK_MAX) {
+		return [-3, null];
+	} else if (lrRank < RANK_MIN) {
+		return [-4, null];
+	}
+
+	await Noblox.changeRank(GROUP_ID, hrUserId, 1);
+
+	return [1, lrPreviousRankName];
+}
+
 Application.get("/promote/:api_key/:hrUserId/:lrUserId", (request, response) => {
 	const apiKey = request.params.api_key;
 	const hrUserId = parseInt(request.params.hrUserId);
 	const lrUserId = parseInt(request.params.lrUserId);
 
 	if (apiKey != API_KEY) {
-		return response.json("Error 1");
+		return response.json("Error -1");
 	}
 
-	let hrRank = Noblox.getRankInGroup(GROUP_ID, hrUserId);
-	let lrRank = Noblox.getRankInGroup(GROUP_ID, lrUserId);
-	let lrPreviousRankName = Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
+	let [result, lrPreviousRankName] = Promote(hrUserId, lrUserId)
 
-	console.log(hrRank, lrRank, lrPreviousRankName);
-
-	if (hrRank < RANK_PROMOTER) {
-		return response.json("Error 2");
+	if (result > 0) {
+		LogSuccess(hrUserId, lrUserId, lrPreviousRankName)
+		response.json("Success!");
+	} else {
+		response.json("Error!");
 	}
-
-	if (lrRank >= RANK_MAX) {
-		return response.json("Error 3");
-	} else if (lrRank < RANK_MIN) {
-		return response.json("Error 4");
-	}
-
-	Noblox.changeRank(GROUP_ID, hrUserId, 1);
-	LogSuccess(hrUserId, lrUserId, lrPreviousRankName);
-
-	response.json("Success");
 });
 
 const listener = Application.listen(process.env.PORT, () => {
