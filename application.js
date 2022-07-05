@@ -15,7 +15,7 @@ const COOKIE = process.env.COOKIE
 
 const COLOR_PROMOTION = "#4caf50"
 const COLOR_DEMOTION = "#ef5350"
-const COLOR_ERROR = "#263238"
+const COLOR_ERROR = "#795548"
 
 const Application = Express();
 Application.use(Express.static("public"));
@@ -64,19 +64,19 @@ async function LogError(errorCode, delta, hrUserId, lrUserId, lrPreviousRankName
 	let errorText;
 	switch (errorCode) {
 		case -2:
-			error = "Promoter is too low rank (must be Assistant Manager+)"
+			errorText = "Promoter is too low rank (must be Assistant Manager+)";
 			break;
 		case -3:
-			error = "Demoter is too low rank (must be Dental Board+)"
+			errorText = "Demoter is too low rank (must be Dental Board+)";
 			break;
 		case -4:
-			error = "Staff member is too low rank (must at least be Awaiting Training)"
+			errorText = "Staff member is too low rank (must at least be Awaiting Training)";
 			break;
 		case -5:
-			error = "Staff member is too high rank (must at under be Oral Surgeon)"
+			errorText = "Staff member is too high rank (must at under be Oral Surgeon)";
 			break;
 		default:
-			error = "Unknown (contact Azutreo for error log)"
+			errorText = "Unknown (contact Azutreo for error log)";
 	}
 
 	const embed = new MessageEmbed()
