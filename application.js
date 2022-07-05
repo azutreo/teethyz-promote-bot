@@ -143,7 +143,7 @@ Application.get("/promote/:api_key/:hrUserId/:lrUserId", (request, response) => 
 	ChangeRank(response, hrUserId, lrUserId, 1);
 });
 
-Application.get("/demote/:api_key/:hrUserId/:lrUserId", (request, response) => {
+/*Application.get("/demote/:api_key/:hrUserId/:lrUserId", (request, response) => {
 	const apiKey = request.params.api_key;
 	const hrUserId = parseInt(request.params.hrUserId);
 	const lrUserId = parseInt(request.params.lrUserId);
@@ -153,7 +153,7 @@ Application.get("/demote/:api_key/:hrUserId/:lrUserId", (request, response) => {
 	}
 
 	ChangeRank(response, hrUserId, lrUserId, -1);
-});
+});*/
 
 const listener = Application.listen(process.env.PORT, () => {
 	console.log(`Application is listening on port ${listener.address().port}`);
