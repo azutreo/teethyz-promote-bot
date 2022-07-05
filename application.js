@@ -56,7 +56,7 @@ async function LogSuccess(delta, hrUserId, lrUserId, lrPreviousRankName) {
 	});
 }
 
-async function LogError(errorCode, delta, hrUserId, lrUserId) {
+async function LogError(errorCode, delta, hrUserId, lrUserId, lrPreviousRankName) {
 	let hrUsername = await Noblox.getUsernameFromId(hrUserId)
 	let lrUsername = await Noblox.getUsernameFromId(lrUserId)
 
@@ -105,18 +105,18 @@ async function ChangeRank(hrUserId, lrUserId, delta) {
 	let lrPreviousRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
 
 	if (delta > 0 && hrRank < RANK_PROMOTER) {
-		LogError(-2, delta, hrRank, lrRank, lrPreviousRankName);
+		LogError(-2, delta, hrUserId, lrUserId, lrPreviousRankName);
 		return -2;
 	} else if (hrRank < RANK_DEMOTER) {
-		LogError(-3, delta, hrRank, lrRank, lrPreviousRankName);
+		LogError(-3, delta, hrUserId, lrUserId, lrPreviousRankName);
 		return -3;
 	}
 
 	if (delta > 0 && lrRank >= RANK_MAX || lrRank > RANK_MAX) {
-		LogError(-4, delta, hrRank, lrRank, lrPreviousRankName);
+		LogError(-4, delta, hrUserId, lrUserId, lrPreviousRankName);
 		return -4;
 	} else if (lrRank < RANK_MIN) {
-		LogError(-5, delta, hrRank, lrRank, lrPreviousRankName);
+		LogError(-5, delta, hrUserId, lrUserId, lrPreviousRankName);
 		return -5;
 	}
 
