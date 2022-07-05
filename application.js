@@ -70,10 +70,10 @@ async function LogError(errorCode, delta, hrUserId, lrUserId, lrPreviousRankName
 			errorText = "Demoter is too low rank (must be Dental Board+)";
 			break;
 		case -4:
-			errorText = "Staff member is too low rank (must at least be Awaiting Training)";
+			errorText = "Staff member is too high rank (must at under be Oral Surgeon)";
 			break;
 		case -5:
-			errorText = "Staff member is too high rank (must at under be Oral Surgeon)";
+			errorText = "Staff member is too low rank (must at least be Awaiting Training)";
 			break;
 		default:
 			errorText = "Unknown (contact Azutreo for error log)";
@@ -114,7 +114,10 @@ async function ChangeRank(hrUserId, lrUserId, delta) {
 		return -3;
 	}
 
-	if (delta > 0 && lrRank >= RANK_MAX || lrRank > RANK_MAX) {
+	if (delta > 0 && lrRank >= RANK_MAX) {
+		LogError(-4, delta, hrUserId, lrUserId, lrPreviousRankName);
+		return -4;
+	} else if (delta < 0 && lrRank > RANK_MAX) {
 		LogError(-4, delta, hrUserId, lrUserId, lrPreviousRankName);
 		return -4;
 	} else if (lrRank < RANK_MIN) {
