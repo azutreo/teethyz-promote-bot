@@ -101,34 +101,34 @@ async function LogError(errorCode, delta, hrUserId, lrUserId, lrPreviousRankName
 	});
 }
 
-async function ChangeRank(hrUserId, lrUserId, delta) {
+async function ChangeRank(response, hrUserId, lrUserId, delta) {
 	let hrRank = await Noblox.getRankInGroup(GROUP_ID, hrUserId);
 	let lrRank = await Noblox.getRankInGroup(GROUP_ID, lrUserId);
 	let lrPreviousRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
 
 	if (delta > 0 && hrRank < RANK_PROMOTER) {
 		LogError(-2, delta, hrUserId, lrUserId, lrPreviousRankName);
-		return -2;
+		return response.json(-2);
 	} else if (hrRank < RANK_DEMOTER) {
 		LogError(-3, delta, hrUserId, lrUserId, lrPreviousRankName);
-		return -3;
+		return response.json(-3);
 	}
 
 	if (delta > 0 && lrRank >= RANK_MAX) {
 		LogError(-4, delta, hrUserId, lrUserId, lrPreviousRankName);
-		return -4;
+		return response.json(-4);
 	} else if (delta < 0 && lrRank > RANK_MAX) {
 		LogError(-4, delta, hrUserId, lrUserId, lrPreviousRankName);
-		return -4;
+		return response.json(-4);
 	} else if (lrRank < RANK_MIN) {
 		LogError(-5, delta, hrUserId, lrUserId, lrPreviousRankName);
-		return -5;
+		return response.json(-5);
 	}
 
 	await Noblox.changeRank(GROUP_ID, lrUserId, delta);
 	await LogSuccess(delta, hrUserId, lrUserId, lrPreviousRankName);
 
-	return 1;
+	return response.json(1);
 }
 
 Application.get("/promote/:api_key/:hrUserId/:lrUserId", (request, response) => {
@@ -137,12 +137,10 @@ Application.get("/promote/:api_key/:hrUserId/:lrUserId", (request, response) => 
 	const lrUserId = parseInt(request.params.lrUserId);
 
 	if (apiKey != API_KEY) {
-		return response.json("Error -1");
+		return response.json(-1);
 	}
 
-	ChangeRank(hrUserId, lrUserId, 1);
-
-	response.json("Success");
+	ChangeRank(response, hrUserId, lrUserId, 1);
 });
 
 Application.get("/demote/:api_key/:hrUserId/:lrUserId", (request, response) => {
@@ -151,12 +149,10 @@ Application.get("/demote/:api_key/:hrUserId/:lrUserId", (request, response) => {
 	const lrUserId = parseInt(request.params.lrUserId);
 
 	if (apiKey != API_KEY) {
-		return response.json("Error -1");
+		return response.json(-1);
 	}
 
-	ChangeRank(hrUserId, lrUserId, -1);
-
-	response.json("Success");
+	ChangeRank(response, hrUserId, lrUserId, -1);
 });
 
 const listener = Application.listen(process.env.PORT, () => {
