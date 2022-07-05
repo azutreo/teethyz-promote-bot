@@ -24,6 +24,7 @@ Application.get("/log/:api_key/:hrUserId/:hrUsername/:lrUsername/:lrRole", (requ
 	const hrUserId = request.params.hrUserId;
 	const hrUsername = request.params.hrUsername;
 	const lrUsername = request.params.lrUsername;
+	const lrRole = request.params.lrRole;
 
 	if (apiKey != process.env.API_KEY) {
 		return response.json("Error");
