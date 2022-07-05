@@ -70,7 +70,7 @@ async function LogError(errorCode, delta, hrUserId, lrUserId, lrPreviousRankName
 			errorText = "Demoter is too low rank (must be Dental Board+)";
 			break;
 		case -4:
-			errorText = "Staff member is too high rank (must at under be Oral Surgeon)";
+			errorText = "Staff member is too high rank (must be under Oral Surgeon)";
 			break;
 		case -5:
 			errorText = "Staff member is too low rank (must at least be Awaiting Training)";
