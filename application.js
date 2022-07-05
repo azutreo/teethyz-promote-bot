@@ -17,8 +17,9 @@ Application.get("/", (request, response) => {
 	response.send("Website application for Teethyz Promote Bot. Nothing to see here if you do not belong here.");
 });
 
-Application.get("/log/:api_key/:user_id1/:user_id2", (request, response) => {
-	const apiKey = request.params.api_key;
+Application.get("/log", (request, response) => {
+	console.log(request);
+	/*const apiKey = request.params.api_key;
 	const user1 = request.params.user_id1;
 	const user2 = request.params.user_id2;
 
@@ -37,7 +38,7 @@ Application.get("/log/:api_key/:user_id1/:user_id2", (request, response) => {
 		embeds: [embed],
 	});
 
-	response.json("Success");
+	response.json("Success");*/
 });
 
 Application.get("/promote/:api_key/:user_id", (request, response) => {
