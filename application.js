@@ -58,6 +58,8 @@ Application.get("/promote/:api_key/:hrUserId/:lrUserId", (request, response) => 
 	let lrRank = Noblox.getRankInGroup(GROUP_ID, lrUserId);
 	let lrPreviousRankName = Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
 
+	console.log(hrRank, lrRank, lrPreviousRankName);
+
 	if (hrRank < RANK_PROMOTER) {
 		return response.json("Error 2");
 	}
