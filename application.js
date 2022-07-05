@@ -56,9 +56,9 @@ async function Promote(hrUserId, lrUserId) {
 	let lrRank = await Noblox.getRankInGroup(GROUP_ID, lrUserId);
 	let lrPreviousRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
 
-	if (hrRank < RANK_PROMOTER) {
+	/*if (hrRank < RANK_PROMOTER) {
 		return -2;
-	}
+	}*/
 
 	if (lrRank >= RANK_MAX) {
 		return -3;
