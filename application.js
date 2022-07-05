@@ -22,7 +22,7 @@ Application.get("/promote/:api_key/:user_id", (request, response) => {
 		return response.json("Error");
 	}
 
-	Noblox.changeRank(process.env.GROUP_ID, parseInt(user));
+	Noblox.changeRank(process.env.GROUP_ID, parseInt(user), 1);
 	response.json("Success");
 });
 
