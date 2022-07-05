@@ -17,7 +17,6 @@ Application.get("/", (request, response) => {
 Application.get("/promote/:api_key/:user_id", (request, response) => {
 	const apiKey = request.params.api_key;
 	const user = request.params.user_id;
-	const rank = request.params.rank;
 
 	if (apiKey != process.env.API_KEY) {
 		return response.json("Error");
