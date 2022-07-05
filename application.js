@@ -32,15 +32,21 @@ async function LogSuccess(hrUserId, lrUserId, lrPreviousRankName) {
 	let lrNewRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
 
 	const embed = new MessageEmbed()
-		.setTitle("Promotion!")
 		.setColor("#4caf50")
-		.addField("Promoting Staff", `${hrUsername} [${hrUserId}]`, true)
+		.setAuthor({
+			name: `${hrUsername} [${hrUserId}]`,
+			iconURL: `https://www.roblox.com/headshot-thumbnail/image?userId=${hrUserId}&width=420&height=420&format=png`,
+			url: `https://www.roblox.com/users/${hrUserId}/profile`
+		})
+		.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${lrUserId}&width=420&height=420&format=png`)
 		.addField("Promoted Staff", `${lrUsername} [${lrUserId}]`, true)
-		.addField("Role Change", `\`${lrPreviousRankName}\` -> \`${lrNewRankName}\``);
+		.addField("Role Change", `"${lrPreviousRankName}" → "${lrNewRankName}"`)
+		.setTimestamp()
+		.setFooter({ text: 'Created by Azutreo', iconURL: 'https://www.roblox.com/headshot-thumbnail/image?userId=9221415&width=420&height=420&format=png' });;
 
 	webhookClient.send({
-		username: hrUsername,
-		avatarURL: `https://www.roblox.com/headshot-thumbnail/image?userId=${hrUserId}&width=420&height=420&format=png`,
+		username: "Teethyz Promotion Bot",
+		avatarURL: `https://tr.rbxcdn.com/138f16052ce9c587817e282b4b7c6fa8/150/150/Image/Png`,
 		embeds: [embed],
 	});
 }
