@@ -3,13 +3,22 @@ const Noblox = require('noblox.js');
 const { MessageEmbed, WebhookClient } = require('discord.js');
 require("dotenv").config();
 
+const GROUP_ID = process.env.GROUP_ID
+const RANK_PROMOTER = process.env.RANK_PROMOTER
+const RANK_MAX = process.env.RANK_MAX
+const RANK_MIN = process.env.RANK_MIN
+const API_KEY = process.env.API_KEY
+const WEBHOOK_ID = process.env.WEBHOOK_ID
+const WEBHOOK_TOKEN = process.env.WEBHOOK_TOKEN
+const COOKIE = process.env.COOKIE
+
 const Application = Express();
 Application.use(Express.static("public"));
 
-const webhookClient = new WebhookClient({ id: process.env.WEBHOOK_ID, token: process.env.WEBHOOK_TOKEN });
+const webhookClient = new WebhookClient({ id: WEBHOOK_ID, token: WEBHOOK_TOKEN });
 
 async function StartApplication() {
-	const currentUser = await Noblox.setCookie(process.env.COOKIE)
+	const currentUser = await Noblox.setCookie(COOKIE)
 	console.log(`Logged in as ${currentUser.UserName} [${currentUser.UserID}]`)
 }
 
@@ -17,42 +26,51 @@ Application.get("/", (request, response) => {
 	response.send("Website application for Teethyz Promote Bot. Nothing to see here if you do not belong here.");
 });
 
-Application.get("/log/:api_key/:hrUserId/:hrUsername/:lrUsername/:lrRole", (request, response) => {
-	console.log(request);
-
-	const apiKey = request.params.api_key;
-	const hrUserId = request.params.hrUserId;
-	const hrUsername = request.params.hrUsername;
-	const lrUsername = request.params.lrUsername;
-	const lrRole = request.params.lrRole;
-
-	if (apiKey != process.env.API_KEY) {
-		return response.json("Error");
-	}
+async function LogSuccess(hrUserId, lrUserId, lrPreviousRankName) {
+	let hrUsername = await Noblox.getUsernameFromId(hrUserId)
+	let lrUsername = await Noblox.getUsernameFromId(lrUserId)
+	let lrNewRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
 
 	const embed = new MessageEmbed()
 		.setTitle("Promotion!")
-		.setColor("#0099ff")
-		.setDescription(`**${hrUsername}** successfully promoted **${lrUsername}** to **${lrRole}**`);
+		.setColor("#81c784")
+		.addField("High Rank", hrUsername)
+		.addField("Low Rank", lrUsername)
+		.addField("Role Change", `**${lrPreviousRankName}** -> **${lrNewRankName}**`);
 
 	webhookClient.send({
 		username: hrUsername,
 		avatarURL: `https://www.roblox.com/headshot-thumbnail/image?userId=${hrUserId}&width=420&height=420&format=png`,
 		embeds: [embed],
 	});
+}
 
-	response.json("Success");
-});
-
-Application.get("/promote/:api_key/:user_id", (request, response) => {
+Application.get("/promote/:api_key/:hrUserId/:lrUserId", (request, response) => {
 	const apiKey = request.params.api_key;
-	const user = request.params.user_id;
+	const hrUserId = parseInt(request.params.hrUserId);
+	const lrUserId = parseInt(request.params.lrUserId);
 
-	if (apiKey != process.env.API_KEY) {
+	if (apiKey != API_KEY) {
 		return response.json("Error");
 	}
 
-	Noblox.changeRank(process.env.GROUP_ID, parseInt(user), 1);
+	let hrRank = await Noblox.getRankInGroup(GROUP_ID, hrUserId);
+	let lrRank = await Noblox.getRankInGroup(GROUP_ID, lrUserId);
+	let lrPreviousRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
+
+	if (hrRank < RANK_PROMOTER) {
+		return response.json("Error");
+	}
+
+	if (lrRank >= RANK_MAX) {
+		return response.json("Error");
+	} else if (lrRank < RANK_MIN) {
+		return response.json("Error");
+	}
+
+	await Noblox.changeRank(GROUP_ID, hrUserId, 1);
+	LogSuccess(hrUserId, lrUserId, lrPreviousRankName);
+
 	response.json("Success");
 });
 
