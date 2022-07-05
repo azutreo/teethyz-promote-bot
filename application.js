@@ -6,7 +6,7 @@ require("dotenv").config();
 const Application = Express();
 Application.use(Express.static("public"));
 
-const webhookClient = new WebhookClient({ url: process.env.WEBHOOK });
+const webhookClient = new WebhookClient({ id: process.env.WEBHOOK_ID, token: process.env.WEBHOOK_TOKEN });
 
 async function StartApplication() {
 	const currentUser = await Noblox.setCookie(process.env.COOKIE)
