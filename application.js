@@ -15,7 +15,7 @@ const COOKIE = process.env.COOKIE
 
 const COLOR_PROMOTION = "#4caf50"
 const COLOR_DEMOTION = "#ef5350"
-const COLOR_ERROR = "#455a64"
+const COLOR_ERROR = "#263238"
 
 const Application = Express();
 Application.use(Express.static("public"));
@@ -44,10 +44,10 @@ async function LogSuccess(delta, hrUserId, lrUserId, lrPreviousRankName) {
 			url: `https://www.roblox.com/users/${hrUserId}/profile`
 		})
 		.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${lrUserId}&width=420&height=420&format=png`)
-		.addField("Staff Member", `${lrUsername} [${lrUserId}]`, true)
+		.addField("Staff Member", `${lrUsername} [${lrUserId}]`)
 		.addField("Role Change", `${lrPreviousRankName} → ${lrNewRankName}`)
 		.setTimestamp()
-		.setFooter({ text: 'Created by Azutreo', iconURL: 'https://www.roblox.com/headshot-thumbnail/image?userId=9221415&width=420&height=420&format=png' });;
+		.setFooter({ text: 'Created by Azutreo', iconURL: 'https://www.roblox.com/headshot-thumbnail/image?userId=9221415&width=420&height=420&format=png' });
 
 	webhookClient.send({
 		username: "Teethyz Promotion Bot",
@@ -59,8 +59,9 @@ async function LogSuccess(delta, hrUserId, lrUserId, lrPreviousRankName) {
 async function LogError(errorCode, delta, hrUserId, lrUserId, lrPreviousRankName) {
 	let hrUsername = await Noblox.getUsernameFromId(hrUserId)
 	let lrUsername = await Noblox.getUsernameFromId(lrUserId)
+	let hrRankName = await Noblox.getRankNameInGroup(GROUP_ID, hrUserId);
 
-	let error;
+	let errorText;
 	switch (errorCode) {
 		case -2:
 			error = "Promoter is too low rank (must be Assistant Manager+)"
@@ -80,15 +81,16 @@ async function LogError(errorCode, delta, hrUserId, lrUserId, lrPreviousRankName
 
 	const embed = new MessageEmbed()
 		.setColor(COLOR_ERROR)
-		.setDescription(`Failed to ${delta > 0 ? "promote" : "demote"}. Error: ${errorCode}`)
+		.setDescription(`Failed to ${delta > 0 ? "promote" : "demote"}. Error: ${errorText}`)
 		.setAuthor({
 			name: `${hrUsername} [${hrUserId}]`,
 			iconURL: `https://www.roblox.com/headshot-thumbnail/image?userId=${hrUserId}&width=420&height=420&format=png`,
 			url: `https://www.roblox.com/users/${hrUserId}/profile`
 		})
 		.setThumbnail(`https://www.roblox.com/headshot-thumbnail/image?userId=${lrUserId}&width=420&height=420&format=png`)
-		.addField("Staff Member", `${lrUsername} [${lrUserId}]`, true)
-		.addField("Role", lrPreviousRankName)
+		.addField("Staff Member", `${lrUsername} [${lrUserId}]`)
+		.addField("Manager Role", hrRankName, true)
+		.addField("Staff Member Role", lrPreviousRankName, true)
 		.setTimestamp()
 		.setFooter({ text: 'Created by Azutreo', iconURL: 'https://www.roblox.com/headshot-thumbnail/image?userId=9221415&width=420&height=420&format=png' });
 
