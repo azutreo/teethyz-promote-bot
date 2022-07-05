@@ -54,9 +54,9 @@ Application.get("/promote/:api_key/:hrUserId/:lrUserId", (request, response) => 
 		return response.json("Error");
 	}
 
-	let hrRank = await Noblox.getRankInGroup(GROUP_ID, hrUserId);
-	let lrRank = await Noblox.getRankInGroup(GROUP_ID, lrUserId);
-	let lrPreviousRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
+	let hrRank = Noblox.getRankInGroup(GROUP_ID, hrUserId);
+	let lrRank = Noblox.getRankInGroup(GROUP_ID, lrUserId);
+	let lrPreviousRankName = Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
 
 	if (hrRank < RANK_PROMOTER) {
 		return response.json("Error");
@@ -68,7 +68,7 @@ Application.get("/promote/:api_key/:hrUserId/:lrUserId", (request, response) => 
 		return response.json("Error");
 	}
 
-	await Noblox.changeRank(GROUP_ID, hrUserId, 1);
+	Noblox.changeRank(GROUP_ID, hrUserId, 1);
 	LogSuccess(hrUserId, lrUserId, lrPreviousRankName);
 
 	response.json("Success");
