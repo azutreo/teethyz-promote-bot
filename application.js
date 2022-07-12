@@ -109,7 +109,7 @@ async function ChangeRank(response, hrUserId, lrUserId, delta) {
 	if (delta > 0 && hrRank < RANK_PROMOTER) {
 		LogError(-2, delta, hrUserId, lrUserId, lrPreviousRankName);
 		return response.json(-2);
-	} else if (hrRank < RANK_DEMOTER) {
+	} else if (delta < 0 && hrRank < RANK_DEMOTER) {
 		LogError(-3, delta, hrUserId, lrUserId, lrPreviousRankName);
 		return response.json(-3);
 	}
