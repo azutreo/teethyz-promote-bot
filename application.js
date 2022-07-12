@@ -32,9 +32,17 @@ Application.get("/", (request, response) => {
 });
 
 async function LogSuccess(delta, hrUserId, lrUserId, lrPreviousRankName) {
-	let hrUsername = await Noblox.getUsernameFromId(hrUserId)
-	let lrUsername = await Noblox.getUsernameFromId(lrUserId)
-	let lrNewRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
+	let hrUsername;
+	let lrUsername;
+	let lrNewRankName;
+
+	try {
+		hrUsername = await Noblox.getUsernameFromId(hrUserId);
+		lrUsername = await Noblox.getUsernameFromId(lrUserId);
+		lrNewRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
+	} catch (error) {
+		return console.log(error);
+	}
 
 	const embed = new MessageEmbed()
 		.setColor(delta > 0 ? COLOR_PROMOTION : COLOR_DEMOTION)
@@ -57,9 +65,17 @@ async function LogSuccess(delta, hrUserId, lrUserId, lrPreviousRankName) {
 }
 
 async function LogError(errorCode, delta, hrUserId, lrUserId, lrPreviousRankName) {
-	let hrUsername = await Noblox.getUsernameFromId(hrUserId)
-	let lrUsername = await Noblox.getUsernameFromId(lrUserId)
-	let hrRankName = await Noblox.getRankNameInGroup(GROUP_ID, hrUserId);
+	let hrUsername;
+	let lrUsername;
+	let hrRankName;
+
+	try {
+		hrUsername = await Noblox.getUsernameFromId(hrUserId);
+		lrUsername = await Noblox.getUsernameFromId(lrUserId);
+		hrRankName = await Noblox.getRankNameInGroup(GROUP_ID, hrUserId);
+	} catch (error) {
+		return console.log(error);
+	}
 
 	let errorText;
 	switch (errorCode) {
@@ -102,9 +118,17 @@ async function LogError(errorCode, delta, hrUserId, lrUserId, lrPreviousRankName
 }
 
 async function ChangeRank(response, hrUserId, lrUserId, delta) {
-	let hrRank = await Noblox.getRankInGroup(GROUP_ID, hrUserId);
-	let lrRank = await Noblox.getRankInGroup(GROUP_ID, lrUserId);
-	let lrPreviousRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
+	let hrRank;
+	let lrRank;
+	let lrPreviousRankName;
+
+	try {
+		hrRank = await Noblox.getRankInGroup(GROUP_ID, hrUserId);
+		lrRank = await Noblox.getRankInGroup(GROUP_ID, lrUserId);
+		lrPreviousRankName = await Noblox.getRankNameInGroup(GROUP_ID, lrUserId);
+	} catch (error) {
+		return console.log(error);
+	}
 
 	if (delta > 0 && hrRank < RANK_PROMOTER) {
 		LogError(-2, delta, hrUserId, lrUserId, lrPreviousRankName);
@@ -125,8 +149,12 @@ async function ChangeRank(response, hrUserId, lrUserId, delta) {
 		return response.json(-5);
 	}
 
-	await Noblox.changeRank(GROUP_ID, lrUserId, delta);
-	await LogSuccess(delta, hrUserId, lrUserId, lrPreviousRankName);
+	try {
+		await Noblox.changeRank(GROUP_ID, lrUserId, delta);
+		await LogSuccess(delta, hrUserId, lrUserId, lrPreviousRankName);
+	} catch (error) {
+		return console.log(error);
+	}
 
 	return response.json(1);
 }
